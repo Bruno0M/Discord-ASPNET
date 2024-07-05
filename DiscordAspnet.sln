@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35013.160
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordAspnet.API", "DiscordAspnet.API\DiscordAspnet.API.csproj", "{20C7D0FF-6531-4675-B284-C4B1359A76CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8AD352FA-56CF-4FAE-B344-BF072BFA2AD0}
+	EndGlobalSection
+EndGlobal
