@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordAspnet.API", "DiscordAspnet.API\DiscordAspnet.API.csproj", "{20C7D0FF-6531-4675-B284-C4B1359A76CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAspnet.API", "DiscordAspnet.API\DiscordAspnet.API.csproj", "{20C7D0FF-6531-4675-B284-C4B1359A76CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAspnet.Domain", "DiscordAspnet.Domain\DiscordAspnet.Domain.csproj", "{0125006F-4A1C-440A-8D92-4D12CC616770}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAspnet.Application", "DiscordAspnet.Application\DiscordAspnet.Application.csproj", "{CD53F2EC-B9C2-40E9-8495-E5ECEAAA87D0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordAspnet.Infrastructure", "DiscordAspnet.Infrastructure\DiscordAspnet.Infrastructure.csproj", "{9D95ABCC-0016-4D44-A551-0DDB26E5AE2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordAspnet.Test", "DiscordAspnet.Test\DiscordAspnet.Test.csproj", "{FF98EF83-D368-4CEB-8C58-8FB351E2B08C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20C7D0FF-6531-4675-B284-C4B1359A76CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0125006F-4A1C-440A-8D92-4D12CC616770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0125006F-4A1C-440A-8D92-4D12CC616770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0125006F-4A1C-440A-8D92-4D12CC616770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0125006F-4A1C-440A-8D92-4D12CC616770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD53F2EC-B9C2-40E9-8495-E5ECEAAA87D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD53F2EC-B9C2-40E9-8495-E5ECEAAA87D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD53F2EC-B9C2-40E9-8495-E5ECEAAA87D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD53F2EC-B9C2-40E9-8495-E5ECEAAA87D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D95ABCC-0016-4D44-A551-0DDB26E5AE2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D95ABCC-0016-4D44-A551-0DDB26E5AE2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D95ABCC-0016-4D44-A551-0DDB26E5AE2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D95ABCC-0016-4D44-A551-0DDB26E5AE2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF98EF83-D368-4CEB-8C58-8FB351E2B08C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF98EF83-D368-4CEB-8C58-8FB351E2B08C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF98EF83-D368-4CEB-8C58-8FB351E2B08C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF98EF83-D368-4CEB-8C58-8FB351E2B08C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
