@@ -6,6 +6,7 @@ namespace DiscordAspnet.Domain.Repositories
     {
         Task CreateGuildsAsync(Guild guild);
         Task<IEnumerable<Guild>> GetGuildsAsync();
-        Task DeleteGuildAsync(Guid guildId, Guid ownerId);
+        Task<bool> DeleteGuildAsync(Guid guildId, Guid ownerId);
+        Task<IEnumerable<Channel>> GetChannelsGuildAsync(Guid guildId);
     }
 }

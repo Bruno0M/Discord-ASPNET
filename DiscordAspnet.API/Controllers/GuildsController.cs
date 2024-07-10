@@ -1,17 +1,16 @@
 ﻿using DiscordAspnet.Application.DTOs.GuildDTOs;
 using DiscordAspnet.Application.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiscordAspnet.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class GuildController : ControllerBase
+    public class GuildsController : ControllerBase
     {
         private readonly IGuildService _guildService;
 
-        public GuildController(IGuildService guildService)
+        public GuildsController(IGuildService guildService)
         {
             _guildService = guildService;
         }
@@ -23,11 +22,24 @@ namespace DiscordAspnet.API.Controllers
             return Ok(response);
         }
 
-
         [HttpGet]
         public async Task<IActionResult> GetGuildsAsync()
         {
             var response = await _guildService.GetGuildsAsync();
+            return Ok(response);
+        }
+
+        [HttpGet("{guildId}")]
+        public async Task<IActionResult> GetChannelsGuildAsync(Guid guildId)
+        {
+            var channel = await _guildService.GetChannelsGuildAsync(guildId);
+            return Ok(channel);
+        }
+
+        [HttpDelete("{guildId}")]
+        public async Task<IActionResult> DeleteChannelAsync(Guid guildId, Guid ownerId)
+        {
+            var response = await _guildService.DeleteGuildAsync(guildId, ownerId);
             return Ok(response);
         }
     }

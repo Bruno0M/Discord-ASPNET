@@ -5,6 +5,6 @@ namespace DiscordAspnet.Domain.Repositories
     public interface IChannelRepository
     {
         Task CreateChannelAsync(Channel channel);
-        Task<List<Channel>> GetChannelsGuildAsync(Guid guildId);
+        Task<bool> DeleteChannelAsync(Guid guildId, Guid channelId, Guid ownerId);
     }
 }
