@@ -22,13 +22,9 @@ namespace DiscordAspnet.Infrastructure.Repositories
 
         public async Task<bool> DeleteChannelAsync(Guid guildId, Guid channelId, Guid ownerId)
         {
-            var guild = await _context.Guilds
-                .Include(g => g.Channels)
-                .FirstOrDefaultAsync(g => g.Id == guildId);
-
-            if (guild == null) return false;
-
-            var channel = guild.Channels.FirstOrDefault(c => c.Id == channelId);
+            var channel = await _context.Channels
+                  .Include(c => c.Guilds)
+                  .FirstOrDefaultAsync(c => c.Id == channelId && c.GuildId == guildId);
 
             if (channel != null && channel.Guilds.OwnerId == ownerId)
             {
