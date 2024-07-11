@@ -19,7 +19,7 @@ namespace DiscordAspnet.Test.UnitTests
         }
 
         [Fact]
-        public async Task Should_Creat_Guild()
+        public async Task CreateGuildsAsync_ValidGuildRequest_ReturnsSuccessResponse()
         {
             //Arrange
 
@@ -34,7 +34,7 @@ namespace DiscordAspnet.Test.UnitTests
         }
 
         [Fact]
-        public async Task Should_Get_All_Guilds()
+        public async Task GetGuildAsync_ThreeGuilds_ReturnsSuccessResponse()
         {
             //Arrange
 
@@ -58,5 +58,49 @@ namespace DiscordAspnet.Test.UnitTests
             Assert.True(response.Status == HttpStatusCode.OK);
             Assert.Equal(3, response.Data?.Count());
         }
+
+        [Fact]
+        public async Task DeleteGuildAsync_GuildDeleted_ReturnsSuccessResponse()
+        {
+            //Arrange
+
+            _guildRepositoryMock
+                .Setup(g => g.DeleteGuildAsync(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                .Returns(Task.FromResult(true));
+
+            //Act
+            var response = await _guildService.DeleteGuildAsync(It.IsAny<Guid>(), It.IsAny<Guid>());
+
+            //Assert
+            Assert.NotNull(response);
+            Assert.True(response.Status == HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task GetChannelsGuildAsync_ThreeChannels_ReturnsSuccessResponse()
+        {
+            //Arrange
+
+            var channels = new List<Channel>()
+            {
+                new() {Id = Guid.NewGuid(), GuildId =  Guid.NewGuid() },
+                new() {Id = Guid.NewGuid(), GuildId =  Guid.NewGuid() },
+                new() {Id = Guid.NewGuid(), GuildId =  Guid.NewGuid() }
+            };
+
+            _guildRepositoryMock
+                .Setup(g => g.GetChannelsGuildAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(channels);
+
+
+            //Act
+            var response = await _guildService.GetChannelsGuildAsync(It.IsAny<Guid>());
+
+            //Assert
+            Assert.NotNull(response);
+            Assert.True(response.Status == HttpStatusCode.OK);
+            Assert.Equal(3, response.Data?.Count());
+        }
+
     }
 }
