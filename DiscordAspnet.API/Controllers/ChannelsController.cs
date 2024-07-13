@@ -29,5 +29,20 @@ namespace DiscordAspnet.API.Controllers
             var response = await _channelService.DeleteChannelAsync(guildId, channelId, ownerId);
             return Ok(response);
         }
+
+        [HttpGet("{guildId}/Channels/{channelId}")]
+        public async Task<IActionResult> ConnectChannelGuild(Guid guildId, Guid channelId)
+        {
+            if (HttpContext.WebSockets.IsWebSocketRequest)
+            {
+                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync(); //client
+
+                await _channelService.OnConnectionReceived(webSocket, guildId, channelId);
+                return Ok();
+            }
+
+            return BadRequest("WebSocket is not supported.");
+
+        }
     }
 }

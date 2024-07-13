@@ -1,7 +1,9 @@
 using DiscordAspnet.Application.Interfaces;
 using DiscordAspnet.Application.Services;
+using DiscordAspnet.Domain.Adapters;
 using DiscordAspnet.Domain.Entities;
 using DiscordAspnet.Domain.Repositories;
+using DiscordAspnet.Infrastructure.Adapters;
 using DiscordAspnet.Infrastructure.Context;
 using DiscordAspnet.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -48,6 +50,8 @@ builder.Services.AddScoped<IGuildRepository, GuildRepository>();
 builder.Services.AddScoped<IGuildService, GuildService>();
 builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
 builder.Services.AddScoped<IChannelService, ChannelService>();
+builder.Services.AddSingleton<IWebSocketAdapter, WebSocketAdapter>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -59,6 +63,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
     .AddDefaultTokenProviders();
 
 var app = builder.Build();
+
+app.UseWebSockets();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

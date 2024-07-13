@@ -1,9 +1,11 @@
 ﻿using DiscordAspnet.Application.DTOs;
 using DiscordAspnet.Application.DTOs.ChannelDTOs;
 using DiscordAspnet.Application.Interfaces;
+using DiscordAspnet.Domain.Adapters;
 using DiscordAspnet.Domain.Entities;
 using DiscordAspnet.Domain.Repositories;
 using System.Net;
+using System.Net.WebSockets;
 
 namespace DiscordAspnet.Application.Services
 {
@@ -11,10 +13,12 @@ namespace DiscordAspnet.Application.Services
     {
 
         private readonly IChannelRepository _channelRepository;
+        private readonly IWebSocketAdapter _webSocketAdapter;
 
-        public ChannelService(IChannelRepository channelRepository)
+        public ChannelService(IChannelRepository channelRepository, IWebSocketAdapter webSocketAdapter)
         {
             _channelRepository = channelRepository;
+            _webSocketAdapter = webSocketAdapter;
         }
 
         public async Task<ServiceResponse<ChannelResponse>> CreateChannelAsync(ChannelRequest channelRequest, Guid guildId)
@@ -60,6 +64,17 @@ namespace DiscordAspnet.Application.Services
             response.Status = HttpStatusCode.NotFound;
 
             return response;
+        }
+
+        public async Task OnConnectionReceived(WebSocket userConnection, Guid guildId, Guid channelId)
+        {
+            var channel = new Channel()
+            {
+                Id = guildId,
+                GuildId = channelId
+            };
+
+            await _webSocketAdapter.HandleUser(userConnection, channel);
         }
     }
 }
