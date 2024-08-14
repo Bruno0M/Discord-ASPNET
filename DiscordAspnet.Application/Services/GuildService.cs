@@ -5,6 +5,7 @@ using DiscordAspnet.Application.Interfaces;
 using DiscordAspnet.Domain.Entities;
 using DiscordAspnet.Domain.Repositories;
 using System.Net;
+using System.Security.Claims;
 
 namespace DiscordAspnet.Application.Services
 {
@@ -19,14 +20,17 @@ namespace DiscordAspnet.Application.Services
         }
 
 
-        public async Task<ServiceResponse<GuildResponse>> CreateGuildsAsync(GuildRequest guildRequest)
+        public async Task<ServiceResponse<GuildResponse>> CreateGuildsAsync(GuildRequest guildRequest, ClaimsPrincipal user)
         {
             ServiceResponse<GuildResponse> response = new();
+
+            
+            Guid userIdClaim = Guid.Parse(user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             var guild = new Guild()
             {
                 Name = guildRequest.Name,
-                OwnerId = guildRequest.OwnerId,
+                OwnerId = userIdClaim,
                 CreatedAt = DateTime.UtcNow,
             };
 

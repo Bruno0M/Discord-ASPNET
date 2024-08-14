@@ -1,5 +1,6 @@
 ﻿using DiscordAspnet.Application.DTOs.GuildDTOs;
 using DiscordAspnet.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiscordAspnet.API.Controllers
@@ -15,10 +16,11 @@ namespace DiscordAspnet.API.Controllers
             _guildService = guildService;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateGuildsAsync(GuildRequest guildRequest)
         {
-            var response = await _guildService.CreateGuildsAsync(guildRequest);
+            var response = await _guildService.CreateGuildsAsync(guildRequest, User);
             return Ok(response);
         }
 
