@@ -36,6 +36,22 @@ builder.Services.AddAuthentication(x =>
                     ClockSkew = TimeSpan.Zero,
                 };
 
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        if (context.Request.Headers.ContainsKey("Sec-WebSocket-Protocol") && context.HttpContext.WebSockets.IsWebSocketRequest)
+                        {
+                            var token = context.Request.Headers["Sec-WebSocket-Protocol"].ToString();
+                            Console.WriteLine(token);
+                            // token arrives as string = "client, xxxxxxxxxxxxxxxxxxxxx"
+                            context.Token = token.Substring(token.IndexOf(',') + 1).Trim();
+                            context.Request.Headers["Sec-WebSocket-Protocol"] = "client";
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
             });
 builder.Services.AddAuthorization();
 
@@ -52,10 +68,11 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IGuildRepository, GuildRepository>();
 builder.Services.AddScoped<IGuildService, GuildService>();
-builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
 builder.Services.AddScoped<IChannelService, ChannelService>();
-builder.Services.AddSingleton<IWebSocketAdapter, WebSocketAdapter>();
+builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
 
+builder.Services.AddSingleton<IWebSocketAdapter, WebSocketAdapter>();
+builder.Services.AddSingleton<IWebSocketService, WebSocketService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -73,6 +90,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(x => x
+.AllowAnyOrigin()
+.AllowAnyMethod()
+.AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
