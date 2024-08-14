@@ -1,5 +1,6 @@
 ﻿namespace DiscordAspnet.Application.DTOs.MessageDTOs
 {
     public record MessageRequest(
-        string Content);
+        string Content,
+        Guid ChannelId);
 }
