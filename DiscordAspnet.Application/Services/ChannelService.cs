@@ -5,7 +5,6 @@ using DiscordAspnet.Domain.Adapters;
 using DiscordAspnet.Domain.Entities;
 using DiscordAspnet.Domain.Repositories;
 using System.Net;
-using System.Net.WebSockets;
 
 namespace DiscordAspnet.Application.Services
 {
@@ -21,13 +20,13 @@ namespace DiscordAspnet.Application.Services
             _webSocketAdapter = webSocketAdapter;
         }
 
-        public async Task<ServiceResponse<ChannelResponse>> CreateChannelAsync(ChannelRequest channelRequest, Guid guildId)
+        public async Task<ServiceResponse<ChannelResponse>> CreateChannelAsync(string name, Guid guildId)
         {
             ServiceResponse<ChannelResponse> response = new();
 
             var channel = new Channel()
-            {
-                Name = channelRequest.Name,
+            {   
+                Name = name,
                 GuildId = guildId,
                 MessageCount = 0,
             };
@@ -66,15 +65,5 @@ namespace DiscordAspnet.Application.Services
             return response;
         }
 
-        public async Task OnConnectionReceived(WebSocket userConnection, Guid guildId, Guid channelId)
-        {
-            var channel = new Channel()
-            {
-                Id = guildId,
-                GuildId = channelId
-            };
-
-            await _webSocketAdapter.HandleUser(userConnection, channel);
-        }
     }
 }

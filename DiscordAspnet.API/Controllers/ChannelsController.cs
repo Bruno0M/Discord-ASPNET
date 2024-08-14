@@ -1,6 +1,7 @@
-﻿using DiscordAspnet.Application.DTOs.ChannelDTOs;
-using DiscordAspnet.Application.Interfaces;
+﻿using DiscordAspnet.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DiscordAspnet.API.Controllers
 {
@@ -9,16 +10,18 @@ namespace DiscordAspnet.API.Controllers
     public class ChannelsController : ControllerBase
     {
         private readonly IChannelService _channelService;
+        private readonly IWebSocketService _websocketService;
 
-        public ChannelsController(IChannelService channelService)
+        public ChannelsController(IChannelService channelService, IWebSocketService websocketService)
         {
             _channelService = channelService;
+            _websocketService = websocketService;
         }
 
         [HttpPost("{guildId}/Channels")]
-        public async Task<IActionResult> CreateChannelAsync(ChannelRequest channelRequest, Guid guildId)
+        public async Task<IActionResult> CreateChannelAsync(string name, Guid guildId)
         {
-            var channel = await _channelService.CreateChannelAsync(channelRequest, guildId);
+            var channel = await _channelService.CreateChannelAsync(name, guildId);
             return Ok(channel);
         }
 
@@ -30,14 +33,15 @@ namespace DiscordAspnet.API.Controllers
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet("{guildId}/Channels/{channelId}")]
         public async Task<IActionResult> ConnectChannelGuild(Guid guildId, Guid channelId)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
-                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync(); //client
+                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync("client"); //client
 
-                await _channelService.OnConnectionReceived(webSocket, guildId, channelId);
+                await _websocketService.OnConnectionReceived(webSocket, guildId, channelId, User);
                 return Ok();
             }
 
