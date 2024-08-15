@@ -1,6 +1,5 @@
 ﻿using DiscordAspnet.Application.DTOs.UserDTOs;
 using DiscordAspnet.Application.Interfaces;
-using DiscordAspnet.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiscordAspnet.API.Controllers
