@@ -4,6 +4,7 @@ using DiscordAspnet.Domain.Entities;
 using DiscordAspnet.Domain.Repositories;
 using Moq;
 using System.Net;
+using System.Security.Claims;
 
 namespace DiscordAspnet.Test.UnitTests
 {
@@ -22,16 +23,21 @@ namespace DiscordAspnet.Test.UnitTests
         public async Task CreateGuildsAsync_ValidGuildRequest_ReturnsSuccessResponse()
         {
             //Arrange
+            var guildRequest = new GuildRequest("GuildTest");
 
-            var guildRequest = new GuildRequest("GuildTest", Guid.NewGuid());
+            var ci = new ClaimsIdentity();
+            ci.AddClaim(new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()));
+
+            var user = new ClaimsPrincipal(ci);
 
             //Act
-            var response = await _guildService.CreateGuildsAsync(guildRequest);
+            var response = await _guildService.CreateGuildsAsync(guildRequest, user);
 
             //Assert
             Assert.NotNull(response);
             Assert.True(response.Status == HttpStatusCode.OK);
         }
+
 
         [Fact]
         public async Task GetGuildAsync_ThreeGuilds_ReturnsSuccessResponse()
