@@ -19,8 +19,8 @@ namespace DiscordAspnet.Application.Services
         {
             var channel = new Channel()
             {
-                Id = guildId,
-                GuildId = channelId
+                Id = channelId,
+                GuildId = guildId
             };
 
             await _webSocketAdapter.HandleUser(userConnection, channel, user);
