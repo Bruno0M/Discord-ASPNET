@@ -82,7 +82,7 @@ namespace DiscordAspnet.Application.Services
             {
                 response.Data = null;
                 response.Message = "Invalid Credentials";
-                response.Status = HttpStatusCode.Unauthorized;
+                response.Status = HttpStatusCode.BadRequest;
                 return response;
             }
 

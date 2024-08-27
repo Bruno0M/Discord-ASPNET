@@ -1,10 +1,11 @@
 ﻿using DiscordAspnet.Application.DTOs.UserDTOs;
 using DiscordAspnet.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace DiscordAspnet.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -18,25 +19,29 @@ namespace DiscordAspnet.API.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(LoginRequest loginRequest)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _authService.Login(loginRequest);
-                return Ok(response);
-            }
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            return BadRequest();
+            var response = await _authService.Login(loginRequest);
+
+            return response.Status == HttpStatusCode.OK
+                ? Ok(response)
+                : BadRequest(response);
+
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserRequest userRequest)
         {
-            if (ModelState.IsValid)
-            {
-                var response = await _authService.Register(userRequest);
-                return Ok(response);
-            }
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            return BadRequest();
+            var response = await _authService.Register(userRequest);
+
+            return response.Status == HttpStatusCode.OK
+                ? Ok(response)
+                : BadRequest(response);
+
         }
 
     }
