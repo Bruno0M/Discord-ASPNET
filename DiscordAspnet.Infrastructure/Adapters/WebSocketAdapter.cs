@@ -2,6 +2,7 @@
 using DiscordAspnet.Application.DTOs.MessageDTOs;
 using DiscordAspnet.Domain.Adapters;
 using DiscordAspnet.Domain.Entities;
+using DiscordAspnet.Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
@@ -27,7 +28,7 @@ namespace DiscordAspnet.Infrastructure.Adapters
             using (var scope = _serviceProvider.CreateScope())
             {
                 var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
+                var _messageRepository = scope.ServiceProvider.GetRequiredService<IMessageRepository>();
 
                 var channelRequest = new ChannelRequest(channel.GuildId, channel.Id);
                 var userConnections = _channelRoom.GetOrAdd(channelRequest, _ => new ConcurrentDictionary<Guid, WebSocket>());
@@ -42,6 +43,19 @@ namespace DiscordAspnet.Infrastructure.Adapters
 
                 userConnections[userM.Id] = userConnection;
 
+                var messageHistory = await _messageRepository.GetAllMessagesAsync(channel.Id);
+
+                foreach (var message in messageHistory)
+                {
+                    var messageResponse = new MessageResponse(
+                        message.Content,
+                        message.User.UserName,
+                        message.ChannelId,
+                        message.CreatedAt);
+
+                    await SendMessageAsync(userConnection, messageResponse);
+                }
+
                 var messageRequest = new MessageResponse($"{userM.UserName} Connected", userM.UserName, channelRequest.ChannelId, DateTime.Now);
 
                 await BroadcastMessageToChannel(channelRequest, messageRequest, userConnection);
@@ -49,9 +63,9 @@ namespace DiscordAspnet.Infrastructure.Adapters
             }
         }
 
-        private async Task SendMessageAsync(WebSocket userConnection, MessageResponse message)
+        private async Task SendMessageAsync(WebSocket userConnection, MessageResponse messageResponse)
         {
-            var messageString = JsonSerializer.Serialize(message);
+            var messageString = JsonSerializer.Serialize(messageResponse);
             var buffer = new ArraySegment<byte>(Encoding.UTF8.GetBytes(messageString));
 
             await userConnection.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
@@ -70,13 +84,29 @@ namespace DiscordAspnet.Infrastructure.Adapters
                 var messageRequest = JsonSerializer.Deserialize<MessageRequest>(messageString);
                 if (messageRequest == null) return;
 
-                var messageResponse = new MessageResponse(
-                    messageRequest.Content,
-                    user.UserName,
-                    messageRequest.ChannelId,
-                    DateTime.UtcNow);
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var _messageRepository = scope.ServiceProvider.GetRequiredService<IMessageRepository>();
 
-                await BroadcastMessageToChannel(channelRequest, messageResponse, userConnection); //Olhar sobre o DateTime (como ele vai ser tratado? datetime.now?
+                    var message = new Message()
+                    {
+                        Content = messageRequest.Content,
+                        UserId = user.Id,
+                        ChannelId = channelRequest.ChannelId,
+                        CreatedAt = DateTime.UtcNow,
+                    };
+
+                    await _messageRepository.SaveMessageAsync(message);
+
+                    var messageResponse = new MessageResponse(
+                        message.Content,
+                        user.UserName,
+                        message.ChannelId,
+                        message.CreatedAt);
+
+                    await BroadcastMessageToChannel(channelRequest, messageResponse, userConnection);
+                }
+
 
                 result = await userConnection.ReceiveAsync(buffer, CancellationToken.None);
             }
@@ -95,16 +125,13 @@ namespace DiscordAspnet.Infrastructure.Adapters
 
         }
 
-        private async Task BroadcastMessageToChannel(ChannelRequest channelRequest, MessageResponse messageRequest, WebSocket excludeConnection = null)
+        private async Task BroadcastMessageToChannel(ChannelRequest channelRequest, MessageResponse messageResponse, WebSocket excludeConnection = null)
         {
             if (_channelRoom.TryGetValue(channelRequest, out var userConnections))
             {
                 foreach (var connection in userConnections.Values)
                 {
-                    if (connection != excludeConnection)
-                    {
-                        await SendMessageAsync(connection, messageRequest);
-                    }
+                    await SendMessageAsync(connection, messageResponse);
                 }
             }
         }
