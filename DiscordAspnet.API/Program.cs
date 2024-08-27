@@ -70,6 +70,7 @@ builder.Services.AddScoped<IGuildRepository, GuildRepository>();
 builder.Services.AddScoped<IGuildService, GuildService>();
 builder.Services.AddScoped<IChannelService, ChannelService>();
 builder.Services.AddScoped<IChannelRepository, ChannelRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddSingleton<IWebSocketAdapter, WebSocketAdapter>();
 builder.Services.AddSingleton<IWebSocketService, WebSocketService>();
